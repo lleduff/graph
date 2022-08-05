@@ -2,7 +2,8 @@
     width: 2rem;
     height: 2rem;
     background-color: black;
-    margin: 1rem;
+    margin: 0.125rem;
+    cursor: pointer;
 }
 
 .node.active {
