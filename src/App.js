@@ -3,8 +3,8 @@ import Map from "./Map";
 import { v4 as uuidv4 } from 'uuid';
 
 
-function initiateMap(width, height) {
-    const newMap = Array(height * height);
+function initiateMap(length) {
+    const newMap = Array(length);
     for (let i = 0; i < newMap.length; i++) {
         newMap[i] = {id:uuidv4(), active: true}
     }
@@ -12,7 +12,7 @@ function initiateMap(width, height) {
 }
 
 function App() {
-    const [ map, setMap ] = useState(initiateMap(20, 10))
+    const [ map, setMap ] = useState(initiateMap(504))
 
     const [ currentNodeState, setCurrent ] = useState(null);
 
@@ -35,8 +35,19 @@ function App() {
         setMap(newMap);
     }
 
+    function handleClear(e) {
+        const newMap = [...map];
+        newMap.map(node => node.active = true);
+        setMap(newMap);
+    }
+
     return (
-        <Map map={map} changeNodeState={changeNodeState} changeFirstNode={changeFirstNode}/>
+        <>
+            <div>
+                <button onClick={handleClear}>clear</button>
+            </div>
+            <Map map={map} changeNodeState={changeNodeState} changeFirstNode={changeFirstNode}/>
+        </>
     );
 }
 
