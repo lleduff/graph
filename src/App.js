@@ -1,4 +1,4 @@
-import React, { useState,  } from 'react';
+import React, { useState, useMemo } from 'react';
 import Map from "./Map";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,16 +14,16 @@ function initiateMap(length) {
 function App() {
     const [ map, setMap ] = useState(initiateMap(504))
 
-    const [ currentNodeState, setCurrent ] = useState(null);
+    const [ lastFirstSelectedState, setLastFirstSelectedState ] = useState();
 
     //called only on mouseDown
     function changeFirstNode(id) {
         const node = map.find(node => node.id === id);
-        setCurrent(node.active);
-        changeNodeState(node.id, node);
+        setLastFirstSelectedState(node.active);
+        changeNodeState(node.id);
     }
 
-    function changeNodeState(id, node=null) {
+    function changeNodeState(id) {
         const newMap = [...map];
         if (node === null) {
             node = newMap.find(node => node.id === id);
