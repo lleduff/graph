@@ -18,18 +18,18 @@ function App() {
 
     //called only on mouseDown
     function changeFirstNode(id) {
-        const node = map.find(node => node.id === id);
+        const newMap = [...map];
+        const node = newMap.find(node => node.id === id);
         setCurrent(node.active);
-        changeNodeState(node.id, node);
+        node.active = !node.active;
+        setMap(newMap);
     }
 
-    function changeNodeState(id, node=null) {
+    function changeNodeState(id) {
         const newMap = [...map];
-        if (node === null) {
-            node = newMap.find(node => node.id === id);
-            if (node.active !== currentNodeState) {     //change only nodes which are in the same state that the first one clicked
-                return;
-            }
+        const node = newMap.find(node => node.id === id);
+        if (node.active !== currentNodeState) {     //change only nodes which are in the same state that the first one clicked
+            return;
         }
         node.active = !node.active;
         setMap(newMap);
