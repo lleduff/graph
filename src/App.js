@@ -14,13 +14,13 @@ function initiateMap(length) {
 function App() {
     const [ map, setMap ] = useState(initiateMap(504))
 
-    const [ currentNodeState, setCurrent ] = useState(null);
+    const [ lastClickedState, setLastClicked ] = useState(null);
 
     //called only on mouseDown
     function changeFirstNode(id) {
         const newMap = [...map];
         const node = newMap.find(node => node.id === id);
-        setCurrent(node.active);
+        setLastClicked(node.active);
         node.active = !node.active;
         setMap(newMap);
     }
@@ -28,7 +28,7 @@ function App() {
     function changeNodeState(id) {
         const newMap = [...map];
         const node = newMap.find(node => node.id === id);
-        if (node.active !== currentNodeState) {     //change only nodes which are in the same state that the first one clicked
+        if (node.active !== lastClickedState) {     //change only nodes which are in the same state that the first one clicked
             return;
         }
         node.active = !node.active;
