@@ -23,7 +23,7 @@ function App() {
     const [ map, setMap ] = useState(initiateMap(WIDTH * HEIGHT));
     const [ lastFirstSelectedState, setLastFirstSelectedState ] = useState(true);
     const [ adjacent, setAdjacent ] = useState([]);
-    const
+
 
 
     //called only on mouseDown
