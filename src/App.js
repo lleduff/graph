@@ -13,36 +13,35 @@ function initiateMap(length) {
     return newMap;
 }
 
-
 function App() {
     const [ map, setMap ] = useState(initiateMap(WIDTH * HEIGHT));
     const [ lastFirstSelectedState, setLastFirstSelectedState ] = useState(true);
-    const [ nodes, setNodes ] = useState(map.filter(node => node.active).map(node => node.id));
-    useMemo(
-        () => {
-            const newNodes = map.filter(node => node.active).map(node => node.id);
-            setNodes(newNodes);
-        }, [map]
+    const [ dictionary, setDictionary ] = useState(
+        map.filter(node => node.active).reduce((acc, node) => {
+            return {...acc, [node.id] : []};
+        }, {})
     );
-
+    // useMemo(
+    //     () => {
+    //         const newNodes = map.filter(node => node.active).map(node => node.id);
+    //         setDictionary(newNodes);
+    //     }, [map]
+    // );
 
     //called only on mouseDown
     function changeFirstNode(id) {
-        const newMap = [...map];
         const node = map.find(node => node.id === id);
         setLastFirstSelectedState(node.active);
-        node.active = !node.active;
-        setMap(newMap);
+        changeNodeState(id, node);
     }
 
-    function changeNodeState(id) {
+    function changeNodeState(id, ref=null) {
         const newMap = [...map];
-        const node = newMap.find(node => node.id === id);
-        if (node.active !== lastFirstSelectedState) {     //change only nodes which are in the same state that the first one clicked
-            return;
+        const node = (ref ? ref : newMap.find(node => node.id === id));
+        if (node.active === lastFirstSelectedState) {     //change only nodes which are in the same state that the first one clicked
+            node.active = !node.active;
+            setMap(newMap);
         }
-        node.active = !node.active;
-        setMap(newMap);
     }
 
     function handleClear(e) {
@@ -54,7 +53,9 @@ function App() {
 
     return (
         <>
-            <div>{nodes.length}</div>
+            <div>{Object.keys(dictionary).length}</div>
+            <div>{JSON.stringify(dictionary)}</div>
+
             <div>
                 <button onClick={handleClear}>clear</button>
             </div>
