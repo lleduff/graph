@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import Map from "./Map";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,17 +13,17 @@ function initiateMap(length) {
     return newMap;
 }
 
-function initiateAdjacent(map) {
-    const adjacent = map.map(node => node.active && node.id);
-    console.log(adjacent)
-    return adjacent;
- }
 
 function App() {
     const [ map, setMap ] = useState(initiateMap(WIDTH * HEIGHT));
     const [ lastFirstSelectedState, setLastFirstSelectedState ] = useState(true);
-    const [ adjacent, setAdjacent ] = useState([]);
-
+    const [ nodes, setNodes ] = useState(map.filter(node => node.active).map(node => node.id));
+    useMemo(
+        () => {
+            const newNodes = map.filter(node => node.active).map(node => node.id);
+            setNodes(newNodes);
+        }, [map]
+    );
 
 
     //called only on mouseDown
@@ -51,8 +51,10 @@ function App() {
         setMap(newMap);
     }
 
+
     return (
         <>
+            <div>{nodes.length}</div>
             <div>
                 <button onClick={handleClear}>clear</button>
             </div>
