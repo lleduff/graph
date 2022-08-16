@@ -1,7 +1,9 @@
-import React, { useState,  } from 'react';
+import React, {useMemo, useState} from 'react';
 import Map from "./Map";
 import { v4 as uuidv4 } from 'uuid';
 
+const WIDTH = 30;
+const HEIGHT = 17;
 
 function initiateMap(length) {
     const newMap = Array(length);
@@ -11,16 +13,24 @@ function initiateMap(length) {
     return newMap;
 }
 
-function App() {
-    const [ map, setMap ] = useState(initiateMap(504))
 
-    const [ lastClickedState, setLastClicked ] = useState(null);
+function App() {
+    const [ map, setMap ] = useState(initiateMap(WIDTH * HEIGHT));
+    const [ lastFirstSelectedState, setLastFirstSelectedState ] = useState(true);
+    const [ nodes, setNodes ] = useState(map.filter(node => node.active).map(node => node.id));
+    useMemo(
+        () => {
+            const newNodes = map.filter(node => node.active).map(node => node.id);
+            setNodes(newNodes);
+        }, [map]
+    );
+
 
     //called only on mouseDown
     function changeFirstNode(id) {
         const newMap = [...map];
-        const node = newMap.find(node => node.id === id);
-        setLastClicked(node.active);
+        const node = map.find(node => node.id === id);
+        setLastFirstSelectedState(node.active);
         node.active = !node.active;
         setMap(newMap);
     }
@@ -28,7 +38,7 @@ function App() {
     function changeNodeState(id) {
         const newMap = [...map];
         const node = newMap.find(node => node.id === id);
-        if (node.active !== lastClickedState) {     //change only nodes which are in the same state that the first one clicked
+        if (node.active !== lastFirstSelectedState) {     //change only nodes which are in the same state that the first one clicked
             return;
         }
         node.active = !node.active;
@@ -41,12 +51,16 @@ function App() {
         setMap(newMap);
     }
 
+
     return (
         <>
+            <div>{nodes.length}</div>
             <div>
                 <button onClick={handleClear}>clear</button>
             </div>
-            <Map map={map} changeNodeState={changeNodeState} changeFirstNode={changeFirstNode}/>
+            <div style={{display:"flex", justifyContent: "center"}}>
+                <Map map={map} changeNodeState={changeNodeState} changeFirstNode={changeFirstNode}/>
+            </div>
         </>
     );
 }

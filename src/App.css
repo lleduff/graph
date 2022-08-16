@@ -9,3 +9,9 @@
 .node.active {
     background-color: gray;
 }
+
+.map {
+    display: grid;
+    grid-template-columns: repeat(30, max-content);
+    column-gap: 0px;
+}
