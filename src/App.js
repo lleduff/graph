@@ -14,17 +14,43 @@ function initiateMap(length) {
 }
 
 
+
+
 function App() {
     const [ map, setMap ] = useState(initiateMap(WIDTH * HEIGHT));
     const [ lastFirstSelectedState, setLastFirstSelectedState ] = useState(true);
-    const [ nodes, setNodes ] = useState(map.filter(node => node.active).map(node => node.id));
+    const [ nodes, setNodes ] = useState(updateDictionary());
     useMemo(
         () => {
-            const newNodes = map.filter(node => node.active).map(node => node.id);
+            const newNodes = updateDictionary();
             setNodes(newNodes);
         }, [map]
     );
 
+    function adjacentNodes(node) {
+        const i = map.indexOf(node);
+        let res = [];
+        if (i - WIDTH >= 0) {
+            if (map[i - WIDTH].active) res = [...res, map[i - WIDTH].id];           //south
+        }
+        if (i + WIDTH < map.length) {
+            if (map[i + WIDTH].active) res = [...res, map[i + WIDTH].id];           //north
+        }
+        if (i % WIDTH !== 0) {
+            if (map[i - 1].active) res = [...res, map[i - 1].id];                   //west
+        }
+        if (i % WIDTH !== WIDTH - 1) {
+            if (map[i + 1].active) res = [...res, map[i + 1].id];                   //east
+        }
+        return res;
+    }
+
+    function updateDictionary() {
+        let dict = {};
+        map.filter(node => node.active)
+            .forEach(node => dict[node.id] = adjacentNodes(node));
+        return dict;
+    }
 
     //called only on mouseDown
     function changeFirstNode(id) {
@@ -54,7 +80,7 @@ function App() {
 
     return (
         <>
-            <div>{nodes.length}</div>
+            <div>{Object.keys(nodes).length}</div>
             <div>
                 <button onClick={handleClear}>clear</button>
             </div>
